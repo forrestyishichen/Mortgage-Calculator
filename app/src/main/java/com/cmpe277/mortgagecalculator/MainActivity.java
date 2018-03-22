@@ -38,13 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RadioGroup year_group;
     RadioButton year_radio;
 
-
-    //Button Pad
-    private Button one;
-    private Button two;
-    private Button three;
-    private Button four;
-
     //EditText
     private EditText showtext;
     private String OperateSum="";
@@ -62,14 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String new_apr="4.00";
 
 
-
-    //Number Gen Related
-    private int[] numberStore = new int[4];
-    private int max = 9, min = 1;
-    private String bt_one = "";
-    private String bt_two = "";
-    private String bt_three = "";
-    private String bt_four = "";
 
     //Menu
     Toolbar toolbar;
@@ -120,11 +105,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView()
     {
-        one=(Button) findViewById(R.id.num_one);
-        two=(Button) findViewById(R.id.num_two);
-        three=(Button) findViewById(R.id.num_three);
-        four=(Button) findViewById(R.id.num_four);
-
         //Text View
         showtext=(EditText) findViewById(R.id.result_text);
         showtext.setCursorVisible(false);
@@ -176,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     OperateSum="";
                                                     showtext.setText(OperateSum);
-                                                    resetNumber();
                                                 }
                                             });
                                     AlertDialog alert = builder.create();
@@ -187,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             case R.id.num_picker:
                                 menuItem.setChecked(true);
                                 mDrawerLayout.closeDrawers();
-                                new_number_picker();
                                 return true;
                         }
                         return true;
@@ -205,11 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initEvent() {
-
-        one.setOnClickListener(this);
-        two.setOnClickListener(this);
-        three.setOnClickListener(this);
-        four.setOnClickListener(this);
 
         //Done button
 //        equal.setOnClickListener(new View.OnClickListener() {
@@ -245,8 +218,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
-        //generate 4 numbers at start
-        resetNumber();
     }
 
     @Override
@@ -263,160 +234,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.game_reset:
-                OperateSum="";
-                showtext.setText(OperateSum);
 
-                one.setEnabled(true);
-                two.setEnabled(true);
-                three.setEnabled(true);
-                four.setEnabled(true);
                 return true;
 
             case R.id.game_skipper:
-                OperateSum="";
-                showtext.setText(OperateSum);
-
-                resetNumber();
 
                 return true;
 
             case R.id.num_picker:
-                new_number_picker();
 
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //Number Generator
-    private void resetNumber() {
-
-        bt_one = Integer.toString(numberStore[0]);
-        bt_two = Integer.toString(numberStore[1]);
-        bt_three = Integer.toString(numberStore[2]);
-        bt_four = Integer.toString(numberStore[3]);
-
-        one.setText(bt_one);
-        two.setText(bt_two);
-        three.setText(bt_three);
-        four.setText(bt_four);
-
-        one.setEnabled(true);
-        two.setEnabled(true);
-        three.setEnabled(true);
-        four.setEnabled(true);
-    }
-
-    private void setNumber() {
-        bt_one = Integer.toString(numberStore[0]);
-        bt_two = Integer.toString(numberStore[1]);
-        bt_three = Integer.toString(numberStore[2]);
-        bt_four = Integer.toString(numberStore[3]);
-
-        one.setText(bt_one);
-        two.setText(bt_two);
-        three.setText(bt_three);
-        four.setText(bt_four);
-
-        one.setEnabled(true);
-        two.setEnabled(true);
-        three.setEnabled(true);
-        four.setEnabled(true);
-
-        //reset input
-        OperateSum="";
-        showtext.setText(OperateSum);
-    }
-
-    private void randomGenerator(){
-        for(int i = 0; i < 4; i++){
-            numberStore[i] = (int)(Math.random() * ((max - min) + 1)) + min;
-        }
-    }
-
-    private void new_number_picker(){
-
-        final Dialog d = new Dialog(MainActivity.this);
-        d.setTitle("NumberPicker");
-        d.setContentView(R.layout.dialog);
-        Button b1 = (Button) d.findViewById(R.id.button1);
-        Button b2 = (Button) d.findViewById(R.id.button2);
-        final NumberPicker np1 = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        np1.setMaxValue(9);
-        np1.setMinValue(1);
-        np1.setWrapSelectorWheel(false);
-        np1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMaxValue(9);
-        np2.setMinValue(1);
-        np2.setWrapSelectorWheel(false);
-        np2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
-        np3.setMaxValue(9);
-        np3.setMinValue(1);
-        np3.setWrapSelectorWheel(false);
-        np3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
-        np4.setMaxValue(9);
-        np4.setMinValue(1);
-        np4.setWrapSelectorWheel(false);
-        np4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        b1.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v) {
-                numberStore[0] = (int)np1.getValue();
-                numberStore[1] = (int)np2.getValue();
-                numberStore[2] = (int)np3.getValue();
-                numberStore[3] = (int)np4.getValue();
-                setNumber();
-                d.dismiss();
-            }
-        });
-        b2.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        d.show();
-    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.num_one:
-                OperateSum=AddSum(String.valueOf(bt_one).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-            case R.id.num_two:
-                OperateSum=AddSum(String.valueOf(bt_two).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-            case R.id.num_three:
-                OperateSum=AddSum(String.valueOf(bt_three).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-            case R.id.num_four:
-                OperateSum=AddSum(String.valueOf(bt_four).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-
 //            case R.id.delete:
 //                if(OperateSum.length()>=1)
 //                {
@@ -440,22 +275,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public String AddSum(char c)
-    {
-        if (Character.isDigit(c)){
-            if (one.getText().charAt(0) == c && one.isEnabled()){
-                one.setEnabled(false);
-            } else if (two.getText().charAt(0) == c && two.isEnabled()) {
-                two.setEnabled(false);
-            } else if (three.getText().charAt(0) == c && three.isEnabled()) {
-                three.setEnabled(false);
-            } else if (four.getText().charAt(0) == c && four.isEnabled()) {
-                four.setEnabled(false);
-            }
-        }
-        OperateSum=OperateSum+String.valueOf(c);
-        return OperateSum;
-    }
 
     public void checkYears(View v) {
         int radioId = year_group.getCheckedRadioButtonId();
