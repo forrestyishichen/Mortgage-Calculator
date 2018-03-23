@@ -19,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import java.util.Stack;
 import java.lang.String;
-
+import java.lang.Math;
 import android.support.design.widget.NavigationView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -30,6 +30,14 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //lock
+    boolean address_lock = false;
+    boolean city_lock = false;
+    boolean zip_lock = false;
+    boolean price_lock = false;
+    boolean downpayment_lock = false;
+    boolean apr_lock = false;
+
     //Spinner & Radio
     Spinner house_type_spinner;
     ArrayAdapter<CharSequence> house_type_adapter;
@@ -38,38 +46,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RadioGroup year_group;
     RadioButton year_radio;
 
-
-    //Button Pad
-    private Button one;
-    private Button two;
-    private Button three;
-    private Button four;
-
     //EditText
-    private EditText showtext;
-    private String OperateSum="";
+    private EditText show_result;
     private EditText show_address;
-    private String new_address="1279 38th Ave";
     private EditText show_city;
-    private String new_city="San Francisco";
     private EditText show_zip;
-    private String new_zip="94122";
     private EditText show_price;
-    private String new_price="1500000";
     private EditText show_downpayment;
-    private String new_downpayment="1000000";
     private EditText show_apr;
-    private String new_apr="4.00";
 
-
-
-    //Number Gen Related
-    private int[] numberStore = new int[4];
-    private int max = 9, min = 1;
-    private String bt_one = "";
-    private String bt_two = "";
-    private String bt_three = "";
-    private String bt_four = "";
+    //Button
+    private Button do_button;
+    private Button save_button;
 
     //Menu
     Toolbar toolbar;
@@ -80,73 +68,164 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
+//        initEvent();
+    }
+
+    private void initView()
+    {
+        //Spinner & RadioGroup
         house_type_spinner = (Spinner)findViewById(R.id.house_type_spinner);
         house_type_adapter = ArrayAdapter.createFromResource(this, R.array.house_type, android.R.layout.simple_spinner_item);
         house_type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         house_type_spinner.setAdapter(house_type_adapter);
-        house_type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + " is selected", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         state_type_spinner = (Spinner)findViewById(R.id.state_type_spinner);
         state_type_adapter = ArrayAdapter.createFromResource(this, R.array.state_type, android.R.layout.simple_spinner_item);
         state_type_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         state_type_spinner.setAdapter(state_type_adapter);
-        state_type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getBaseContext(), parent.getItemAtPosition(position) + " is selected", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         year_group = findViewById(R.id.radio_group);
 
-        initView();
-        initEvent();
-    }
-
-    private void initView()
-    {
-        one=(Button) findViewById(R.id.num_one);
-        two=(Button) findViewById(R.id.num_two);
-        three=(Button) findViewById(R.id.num_three);
-        four=(Button) findViewById(R.id.num_four);
-
-        //Text View
-        showtext=(EditText) findViewById(R.id.result_text);
-        showtext.setCursorVisible(false);
-
+        //EditText
+        show_result=(EditText) findViewById(R.id.result_text);
+        show_result.setCursorVisible(false);
 
         show_address=(EditText) findViewById(R.id.show_address);
-        show_address.setText(new_address);
+        show_address.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_address.getText().length() == 0) {
+                    show_address.setError("Please input a valid address!");
+                    address_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    address_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
+
         show_city=(EditText) findViewById(R.id.show_city);
-        show_city.setText(new_city);
+        show_city.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_city.getText().length() == 0) {
+                    show_city.setError("Please input a valid city!");
+                    city_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    city_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
+
         show_zip=(EditText) findViewById(R.id.show_zip);
-        show_zip.setText(new_zip);
+        show_zip.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_zip.getText().length() != 5) {
+                    show_zip.setError("Please input a valid zipcode!");
+                    zip_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    zip_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
 
         show_price=(EditText) findViewById(R.id.show_price);
-        show_price.setText(new_price);
+        show_price.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_price.getText().length() == 0) {
+                    show_price.setError("Please input a valid price!");
+                    price_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    price_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
+
         show_downpayment=(EditText) findViewById(R.id.show_downpayment);
-        show_downpayment.setText(new_downpayment);
+        show_downpayment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_downpayment.getText().length() == 0) {
+                    show_downpayment.setError("Please input a valid down payment!");
+                    downpayment_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    downpayment_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
+
         show_apr=(EditText) findViewById(R.id.show_apr);
-        show_apr.setText(new_apr);
+        show_apr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (show_apr.getText().length() == 0) {
+                    show_apr.setError("Please input a valid apr!");
+                    apr_lock = false;
+                    do_button.setEnabled(false);
+                } else {
+                    apr_lock = true;
+                    if (price_lock && downpayment_lock && apr_lock) {
+                        do_button.setEnabled(true);
+                    }
+
+                    if (address_lock && city_lock && zip_lock && price_lock && downpayment_lock && apr_lock) {
+                        save_button.setEnabled(true);
+                    }
+                }
+            }
+        });
+
+        //Button
+        do_button = (Button) findViewById(R.id.do_calculate);
+        do_button.setEnabled(false);
+        do_button.setOnClickListener(this);
+        save_button = (Button) findViewById(R.id.save_result);
+        save_button.setOnClickListener(this);
 
         //Drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -174,9 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             .setPositiveButton("Next Puzzle", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    OperateSum="";
-                                                    showtext.setText(OperateSum);
-                                                    resetNumber();
+
                                                 }
                                             });
                                     AlertDialog alert = builder.create();
@@ -187,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             case R.id.num_picker:
                                 menuItem.setChecked(true);
                                 mDrawerLayout.closeDrawers();
-                                new_number_picker();
                                 return true;
                         }
                         return true;
@@ -205,11 +281,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initEvent() {
-
-        one.setOnClickListener(this);
-        two.setOnClickListener(this);
-        three.setOnClickListener(this);
-        four.setOnClickListener(this);
 
         //Done button
 //        equal.setOnClickListener(new View.OnClickListener() {
@@ -245,8 +316,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
-        //generate 4 numbers at start
-        resetNumber();
     }
 
     @Override
@@ -263,198 +332,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
 
             case R.id.game_reset:
-                OperateSum="";
-                showtext.setText(OperateSum);
 
-                one.setEnabled(true);
-                two.setEnabled(true);
-                three.setEnabled(true);
-                four.setEnabled(true);
                 return true;
 
             case R.id.game_skipper:
-                OperateSum="";
-                showtext.setText(OperateSum);
-
-                resetNumber();
 
                 return true;
 
             case R.id.num_picker:
-                new_number_picker();
 
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //Number Generator
-    private void resetNumber() {
-
-        bt_one = Integer.toString(numberStore[0]);
-        bt_two = Integer.toString(numberStore[1]);
-        bt_three = Integer.toString(numberStore[2]);
-        bt_four = Integer.toString(numberStore[3]);
-
-        one.setText(bt_one);
-        two.setText(bt_two);
-        three.setText(bt_three);
-        four.setText(bt_four);
-
-        one.setEnabled(true);
-        two.setEnabled(true);
-        three.setEnabled(true);
-        four.setEnabled(true);
-    }
-
-    private void setNumber() {
-        bt_one = Integer.toString(numberStore[0]);
-        bt_two = Integer.toString(numberStore[1]);
-        bt_three = Integer.toString(numberStore[2]);
-        bt_four = Integer.toString(numberStore[3]);
-
-        one.setText(bt_one);
-        two.setText(bt_two);
-        three.setText(bt_three);
-        four.setText(bt_four);
-
-        one.setEnabled(true);
-        two.setEnabled(true);
-        three.setEnabled(true);
-        four.setEnabled(true);
-
-        //reset input
-        OperateSum="";
-        showtext.setText(OperateSum);
-    }
-
-    private void randomGenerator(){
-        for(int i = 0; i < 4; i++){
-            numberStore[i] = (int)(Math.random() * ((max - min) + 1)) + min;
-        }
-    }
-
-    private void new_number_picker(){
-
-        final Dialog d = new Dialog(MainActivity.this);
-        d.setTitle("NumberPicker");
-        d.setContentView(R.layout.dialog);
-        Button b1 = (Button) d.findViewById(R.id.button1);
-        Button b2 = (Button) d.findViewById(R.id.button2);
-        final NumberPicker np1 = (NumberPicker) d.findViewById(R.id.numberPicker1);
-        np1.setMaxValue(9);
-        np1.setMinValue(1);
-        np1.setWrapSelectorWheel(false);
-        np1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np2 = (NumberPicker) d.findViewById(R.id.numberPicker2);
-        np2.setMaxValue(9);
-        np2.setMinValue(1);
-        np2.setWrapSelectorWheel(false);
-        np2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np3 = (NumberPicker) d.findViewById(R.id.numberPicker3);
-        np3.setMaxValue(9);
-        np3.setMinValue(1);
-        np3.setWrapSelectorWheel(false);
-        np3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        final NumberPicker np4 = (NumberPicker) d.findViewById(R.id.numberPicker4);
-        np4.setMaxValue(9);
-        np4.setMinValue(1);
-        np4.setWrapSelectorWheel(false);
-        np4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal){
-            }
-        });
-        b1.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v) {
-                numberStore[0] = (int)np1.getValue();
-                numberStore[1] = (int)np2.getValue();
-                numberStore[2] = (int)np3.getValue();
-                numberStore[3] = (int)np4.getValue();
-                setNumber();
-                d.dismiss();
-            }
-        });
-        b2.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v) {
-                d.dismiss();
-            }
-        });
-        d.show();
-    }
-
     @Override
     public void onClick(View v) {
+        String new_result = "";
         switch (v.getId()) {
-            case R.id.num_one:
-                OperateSum=AddSum(String.valueOf(bt_one).charAt(0));
-                showtext.setText(OperateSum);
+            case R.id.do_calculate:
+                double temp = calculation();
+                if (temp == - 1) {
+                    new_result = "Valid input required!";
+                    show_result.setText(new_result);
+                } else {
+                    new_result = "$" + String.valueOf(temp);
+                    show_result.setText(new_result);
+                }
                 break;
-            case R.id.num_two:
-                OperateSum=AddSum(String.valueOf(bt_two).charAt(0));
-                showtext.setText(OperateSum);
+            case R.id.save_result:
+                new_result = "Result Saved";
+                show_result.setText(new_result);
                 break;
-            case R.id.num_three:
-                OperateSum=AddSum(String.valueOf(bt_three).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-            case R.id.num_four:
-                OperateSum=AddSum(String.valueOf(bt_four).charAt(0));
-                showtext.setText(OperateSum);
-                break;
-
-//            case R.id.delete:
-//                if(OperateSum.length()>=1)
-//                {
-//                    char c = OperateSum.charAt(OperateSum.length()-1);
-//                    if (Character.isDigit(c)) {
-//                        if (one.getText().charAt(0) == c && (!one.isEnabled())){
-//                            one.setEnabled(true);
-//                        } else if (two.getText().charAt(0) == c && (!two.isEnabled())) {
-//                            two.setEnabled(true);
-//                        } else if (three.getText().charAt(0) == c && (!three.isEnabled())) {
-//                            three.setEnabled(true);
-//                        } else if (four.getText().charAt(0) == c && (!four.isEnabled())) {
-//                            four.setEnabled(true);
-//                        }
-//                    }
-//                    OperateSum=OperateSum.substring(0,OperateSum.length()-1);
-//                }
-//                showtext.setText(OperateSum);
             default:
                 break;
         }
-    }
-
-    public String AddSum(char c)
-    {
-        if (Character.isDigit(c)){
-            if (one.getText().charAt(0) == c && one.isEnabled()){
-                one.setEnabled(false);
-            } else if (two.getText().charAt(0) == c && two.isEnabled()) {
-                two.setEnabled(false);
-            } else if (three.getText().charAt(0) == c && three.isEnabled()) {
-                three.setEnabled(false);
-            } else if (four.getText().charAt(0) == c && four.isEnabled()) {
-                four.setEnabled(false);
-            }
-        }
-        OperateSum=OperateSum+String.valueOf(c);
-        return OperateSum;
     }
 
     public void checkYears(View v) {
@@ -462,5 +374,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         year_radio = findViewById(radioId);
 
         Toast.makeText(this, "Selected: " + year_radio.getText(), Toast.LENGTH_SHORT).show();
+    }
+
+    //Calulation Function Bind with Button;
+    public double calculation(){
+        //pv
+        String price_temp = show_price.getText().toString();
+        if (price_temp.length() == 0) {
+            return -1;
+        }
+        String downpayment_temp = show_downpayment.getText().toString();
+        if (downpayment_temp.length() == 0) {
+            return -1;
+        }
+        double amount = Double.parseDouble(price_temp) - Double.parseDouble(downpayment_temp);
+
+        //monthly rate
+        String apr_temp = show_apr.getText().toString();
+        if (apr_temp.length() == 0) {
+            return -1;
+        }
+        double rate = Double.parseDouble(apr_temp)/1200;
+
+        //term and period from radio group
+        int radioId = year_group.getCheckedRadioButtonId();
+        year_radio = findViewById(radioId);
+        double period = 0;
+        if (year_radio.getText().toString().equals("15 years")) {
+            period = 180;
+        } else {
+            period = 360;
+        }
+
+        //calculation
+        double temp = Math.pow(rate + 1, period);
+        return Math.round(amount * (rate * temp) / (temp  - 1)*100.0)/100.0;
     }
 }
