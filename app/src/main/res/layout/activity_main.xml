@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         >
 
         <android.support.v7.widget.Toolbar
@@ -23,6 +25,22 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:textSize="25sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="Property Info :"
+                    android:singleLine="true"/>
+
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -68,7 +86,7 @@
                     android:textSize="15sp"
                     android:layout_marginStart="8dp"
                     android:layout_gravity="start"
-                    android:singleLine="true" />
+                    android:singleLine="true"/>
 
             </TableRow>
 
@@ -153,6 +171,22 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:textSize="25sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="Loan Info :"
+                    android:singleLine="true"/>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="4"
                     android:textSize="15sp"
                     android:textColor="@color/colorPrimaryDark"
@@ -168,7 +202,8 @@
                     android:layout_marginStart="8dp"
                     android:textSize="15sp"
                     android:layout_gravity="start"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="1500000.00"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -203,6 +238,7 @@
                     android:layout_marginStart="8dp"
                     android:textSize="15sp"
                     android:layout_gravity="start"
+                    android:text="1000000.00"
                     android:singleLine="true" />
 
                 <TextView
@@ -238,6 +274,7 @@
                     android:layout_marginStart="8dp"
                     android:textSize="15sp"
                     android:layout_gravity="start"
+                    android:text="6.00"
                     android:singleLine="true" />
 
                 <TextView
@@ -294,23 +331,38 @@
 
             </TableRow>
 
-        </TableLayout>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
-        <EditText
-            android:id="@+id/result_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:textSize="30sp"
-            android:padding="20dp"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="10dp"
-            android:editable="false"
-            android:textAlignment="textEnd"
-            android:singleLine="true"
-            android:background="@drawable/textview_border"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="2"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="Monthly payment :"
+                    android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/result_text"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="3"
+                    android:textSize="20sp"
+                    android:padding="10dp"
+                    android:layout_gravity="end"
+                    android:editable="false"
+                    android:textAlignment="textEnd"
+                    android:singleLine="true"
+                    android:background="@drawable/textview_border"
+                    android:inputType="" />
+
+            </TableRow>
+
+        </TableLayout>
 
         <TableLayout
             android:layout_width="match_parent"
@@ -323,54 +375,23 @@
                 <Button
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:textSize="22sp"
-                    android:id="@+id/num_one" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:textSize="22sp"
-                    android:id="@+id/num_two" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:textSize="22sp"
-                    android:id="@+id/num_three" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:textSize="22sp"
-                    android:id="@+id/num_four" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="60dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
                     android:textSize="18sp"
-                    android:text="Do"
+                    android:text="Calculate"
+                    android:enabled="false"
                     android:id="@+id/do_calculate" />
 
                 <Button
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="60dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
                     android:textSize="18sp"
                     android:text="Save"
+                    android:enabled="false"
                     android:id="@+id/save_result" />
             </TableRow>
 
@@ -386,6 +407,5 @@
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_view"
         app:headerLayout="@layout/nav_header" />
-
 
 </android.support.v4.widget.DrawerLayout>
