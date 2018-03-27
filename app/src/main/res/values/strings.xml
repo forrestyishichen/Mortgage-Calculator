@@ -1,7 +1,11 @@
 <resources>
-    <string name="app_name"></string>
-    <string name="num_picker">Assign Numbers</string>
-    <string name="show_me">Show Me</string>
+    <string name="app_name">Mortgage Calculator</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
     <string-array name="house_type">
         <item>House</item>
         <item>Townhouse</item>
@@ -59,4 +63,8 @@
         <item>Wisconsin</item>
         <item>Wyoming</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
