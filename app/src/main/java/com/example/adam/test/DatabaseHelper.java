@@ -116,13 +116,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    //清掉
-    public void clearDatabase() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String clearDBQuery = "DELETE FROM "+ TABLE_NAME;
-        db.execSQL(clearDBQuery);
-    }
-
     public void deleteRow(String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_NAME+" WHERE " + COL0 + "= '" + address + "'");
