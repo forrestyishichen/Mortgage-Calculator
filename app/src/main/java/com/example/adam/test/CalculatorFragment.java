@@ -1,7 +1,10 @@
 package com.example.adam.test;
 
 
+import android.content.Context;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +17,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,16 +28,17 @@ import android.widget.Spinner;
 public class  CalculatorFragment extends Fragment {
 
     //State variable
-    String current_address;
-    String current_city;
-    String current_state;
-    String current_zipcode;
-    String current_type;
-    String current_price;
-    String current_payment;
-    String current_apr;
-    String current_terms;
-    String current_result;
+    String current_address = "";
+    String current_city = "";
+    String current_state = "";
+    String current_zipcode = "";
+    String current_type = "";
+    String current_price = "";
+    String current_payment = "";
+    String current_apr = "";
+    String current_terms = "";
+    String current_result = "-1";
+    String oldaddress = "";
 
     //lock
     boolean address_lock = false;
@@ -348,7 +356,7 @@ public class  CalculatorFragment extends Fragment {
                 current_payment = "";
                 current_apr = "";
                 current_terms = "";
-                current_result = "";
+                current_result = "-1";
 
                 show_result.setText("");
             }
@@ -358,22 +366,97 @@ public class  CalculatorFragment extends Fragment {
         save_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (current_result != "") {
-                    boolean insertData = mDatabaseHelper.addData(current_address, current_city,
-                            current_state, current_zipcode, current_type, current_price,
-                            current_payment, current_apr, current_terms, current_result);
-                    if (insertData) {
-                        show_result.setText("Data saved!");
+                if (current_result != "-1") {
+
+                    String address = "";
+                    address += current_address;
+                    address += current_city;
+                    address += current_state;
+                    address += current_zipcode;
+
+                    LatLng location = getLocationFromAddress(getContext(), address);
+                    if (location != null) {
+                        Cursor data = mDatabaseHelper.getRecord(current_address);
+                        if(data.moveToNext()) {
+                            boolean updateData = mDatabaseHelper.modData(oldaddress, current_address, current_city,
+                                    current_state, current_zipcode, current_type, current_price,
+                                    current_payment, current_apr, current_terms, current_result);
+                            if (updateData) {
+                                show_result.setText("Data updated!");
+                            } else {
+                                show_result.setText("We failed!");
+                            }
+                        } else {
+                            boolean insertData = mDatabaseHelper.addData(current_address, current_city,
+                                    current_state, current_zipcode, current_type, current_price,
+                                    current_payment, current_apr, current_terms, current_result);
+                            if (insertData) {
+                                show_result.setText("Data saved!");
+                            } else {
+                                show_result.setText("We failed!");
+                            }
+                        }
                     } else {
-                        show_result.setText("We failed!");
+                        show_result.setText("No such location!");
                     }
                 } else {
-                    show_result.setText("Please calculate first!");
+                    show_result.setText("Calculate first!");
                 }
-
             }
         });
 
+        if (getArguments() != null)
+        {
+            String getArgument = getArguments().getString("data");
+            Cursor data = mDatabaseHelper.getRecord(getArgument);
+
+            while(data.moveToNext()){
+                house_type_spinner.setSelection(((ArrayAdapter)house_type_spinner.getAdapter()).getPosition(data.getString(4)));
+                show_address.setText(data.getString(0));
+                show_city.setText(data.getString(1));
+                state_type_spinner.setSelection(((ArrayAdapter)state_type_spinner.getAdapter()).getPosition(data.getString(2)));
+                show_zip.setText(data.getString(3));
+                show_price.setText(data.getString(5));
+                show_downpayment.setText(data.getString(6));
+                show_apr.setText(data.getString(7));
+                if (data.getString(8) == "15 years") {
+                    year_group.check(R.id.radio_15);
+                } else {
+                    year_group.check(R.id.radio_30);
+                }
+                do_button.setEnabled(true);
+                save_button.setEnabled(true);
+                show_result.setText("Please edit!");
+                oldaddress = data.getString(0);
+            }
+        }
+
         return myFragmentView;
+    }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress)
+    {
+        Geocoder coder= new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try
+        {
+            address = coder.getFromLocationName(strAddress, 5);
+            if(address==null)
+            {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return p1;
     }
 }
