@@ -32,6 +32,8 @@ http://www.wikihow.com/Calculate-Mortgage-Payments
 Start a new mortgage calculation:
 A New button must be provided for the user to start a new mortgage calculation. The current input, if there is any, will be cleared so that it is a fresh start for a new mortgage.
 
+![alt text](https://github.com/forrestyishichen/Mortgage-Calculator/blob/master/Screenshots/1_calculateView.png)
+
 Save a mortgage:
 User must have an option to save a mortgage calculation. The app must validate the address, and persist all the input and the output from feature 1. If the address is invalid, the user cannot save the calculation. 
 Saved data must be persisted in Shared Preferences, Internal Storage, or SQLite Databases.
