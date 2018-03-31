@@ -52,9 +52,10 @@ A Delete button allow user to remove this mortgage calculation, it must be remov
 An Edit button to bring the user to the Calculation view to make changes. 
 Device & screen size
 We are going to check the assignments on a Nexus 6 emulator. View layout optimization for tablets and rotation is not required, but the content needs to be clearly viewable in any case and you app should not crash. 
-Error handling
-Your app must have proper error handling for missing required fields or invalid data type.
-Example: APR is mandatory for calculation, and Address is mandatory for showing up on the Map.
+
+![alt text](https://github.com/forrestyishichen/Mortgage-Calculator/blob/master/Screenshots/12_calculateView.png)
+
+![alt text](https://github.com/forrestyishichen/Mortgage-Calculator/blob/master/Screenshots/13_markerOnclick.png)
 
 
 
